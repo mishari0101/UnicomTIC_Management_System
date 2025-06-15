@@ -53,6 +53,7 @@ namespace UnicomTICManagementSystem.Views
             }
         }
 
+        // Event handler for the Courses button
         private void btnCourses_Click(object sender, EventArgs e)
         {
             // Create a new instance of our CourseForm
