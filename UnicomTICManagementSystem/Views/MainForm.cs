@@ -72,6 +72,18 @@ namespace UnicomTICManagementSystem.Views
             SubjectForm subjectForm = new SubjectForm();
             subjectForm.Show();
         }
+
+        private void btnRooms_Click(object sender, EventArgs e)
+        {
+            RoomForm roomForm = new RoomForm();
+            roomForm.Show();
+        }
+
+        private void btnTimetable_Click(object sender, EventArgs e)
+        {
+            TimetableForm timetableForm = new TimetableForm(loggedInUser);
+            timetableForm.Show();
+        }
     }
 }
 

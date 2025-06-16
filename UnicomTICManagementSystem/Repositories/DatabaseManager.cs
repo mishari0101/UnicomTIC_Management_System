@@ -363,5 +363,164 @@ namespace UnicomTICManagementSystem.Repositories
                 }
             }
         }
+        // --- Room Management Methods ---
+
+        public static List<Room> GetAllRooms()
+        {
+            var rooms = new List<Room>();
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "SELECT RoomID, RoomName, RoomType FROM Rooms";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var room = new Room
+                            {
+                                RoomID = reader.GetInt32(0),
+                                RoomName = reader.GetString(1),
+                                RoomType = reader.GetString(2)
+                            };
+                            rooms.Add(room);
+                        }
+                    }
+                }
+            }
+            return rooms;
+        }
+
+        public static void AddRoom(string roomName, string roomType)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "INSERT INTO Rooms (RoomName, RoomType) VALUES (@roomName, @roomType)";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@roomName", roomName);
+                    command.Parameters.AddWithValue("@roomType", roomType);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void UpdateRoom(int roomId, string newName, string newType)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "UPDATE Rooms SET RoomName = @name, RoomType = @type WHERE RoomID = @id";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@name", newName);
+                    command.Parameters.AddWithValue("@type", newType);
+                    command.Parameters.AddWithValue("@id", roomId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void DeleteRoom(int roomId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "DELETE FROM Rooms WHERE RoomID = @id";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@id", roomId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        // --- Timetable Management Methods ---
+
+        public static List<Timetable> GetAllTimetableEntries()
+        {
+            var entries = new List<Timetable>();
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                // This is our most advanced query yet!
+                // It joins THREE tables: Timetables (t), Subjects (s), and Rooms (r).
+                // This allows us to get the SubjectName and RoomName in a single database call.
+                string query = @"
+            SELECT t.TimetableID, t.TimeSlot, s.SubjectName, r.RoomName, t.SubjectID, t.RoomID
+            FROM Timetables t
+            LEFT JOIN Subjects s ON t.SubjectID = s.SubjectID
+            LEFT JOIN Rooms r ON t.RoomID = r.RoomID";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var entry = new Timetable
+                            {
+                                TimetableID = reader.GetInt32(0),
+                                TimeSlot = reader.GetString(1),
+                                SubjectName = reader.IsDBNull(2) ? "N/A" : reader.GetString(2),
+                                RoomName = reader.IsDBNull(3) ? "N/A" : reader.GetString(3),
+                                SubjectID = reader.GetInt32(4),
+                                RoomID = reader.GetInt32(5)
+                            };
+                            entries.Add(entry);
+                        }
+                    }
+                }
+            }
+            return entries;
+        }
+
+        public static void AddTimetableEntry(string timeSlot, int subjectId, int roomId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "INSERT INTO Timetables (TimeSlot, SubjectID, RoomID) VALUES (@timeSlot, @subjectId, @roomId)";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@timeSlot", timeSlot);
+                    command.Parameters.AddWithValue("@subjectId", subjectId);
+                    command.Parameters.AddWithValue("@roomId", roomId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void UpdateTimetableEntry(int timetableId, string newTimeSlot, int newSubjectId, int newRoomId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "UPDATE Timetables SET TimeSlot = @timeSlot, SubjectID = @subjectId, RoomID = @roomId WHERE TimetableID = @id";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@timeSlot", newTimeSlot);
+                    command.Parameters.AddWithValue("@subjectId", newSubjectId);
+                    command.Parameters.AddWithValue("@roomId", newRoomId);
+                    command.Parameters.AddWithValue("@id", timetableId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void DeleteTimetableEntry(int timetableId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "DELETE FROM Timetables WHERE TimetableID = @id";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@id", timetableId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }
