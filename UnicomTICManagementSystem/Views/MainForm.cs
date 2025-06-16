@@ -67,6 +67,11 @@ namespace UnicomTICManagementSystem.Views
             studentForm.Show();
         }
 
+        private void btnSubjects_Click(object sender, EventArgs e)
+        {
+            SubjectForm subjectForm = new SubjectForm();
+            subjectForm.Show();
+        }
     }
 }
 

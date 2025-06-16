@@ -34,6 +34,7 @@ namespace UnicomTICManagementSystem.Views
             this.btnStudents = new System.Windows.Forms.Button();
             this.btnTimetable = new System.Windows.Forms.Button();
             this.btnExams = new System.Windows.Forms.Button();
+            this.btnSubjects = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnCourses
@@ -58,7 +59,7 @@ namespace UnicomTICManagementSystem.Views
             // 
             // btnTimetable
             // 
-            this.btnTimetable.Location = new System.Drawing.Point(95, 199);
+            this.btnTimetable.Location = new System.Drawing.Point(95, 292);
             this.btnTimetable.Name = "btnTimetable";
             this.btnTimetable.Size = new System.Drawing.Size(208, 39);
             this.btnTimetable.TabIndex = 2;
@@ -67,18 +68,29 @@ namespace UnicomTICManagementSystem.Views
             // 
             // btnExams
             // 
-            this.btnExams.Location = new System.Drawing.Point(95, 284);
+            this.btnExams.Location = new System.Drawing.Point(95, 380);
             this.btnExams.Name = "btnExams";
             this.btnExams.Size = new System.Drawing.Size(208, 42);
             this.btnExams.TabIndex = 3;
             this.btnExams.Text = "Manage Exams & Marks";
             this.btnExams.UseVisualStyleBackColor = true;
             // 
+            // btnSubjects
+            // 
+            this.btnSubjects.Location = new System.Drawing.Point(95, 207);
+            this.btnSubjects.Name = "btnSubjects";
+            this.btnSubjects.Size = new System.Drawing.Size(208, 41);
+            this.btnSubjects.TabIndex = 4;
+            this.btnSubjects.Text = "Manage Subjects";
+            this.btnSubjects.UseVisualStyleBackColor = true;
+            this.btnSubjects.Click += new System.EventHandler(this.btnSubjects_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnSubjects);
             this.Controls.Add(this.btnExams);
             this.Controls.Add(this.btnTimetable);
             this.Controls.Add(this.btnStudents);
@@ -101,5 +113,6 @@ namespace UnicomTICManagementSystem.Views
         private System.Windows.Forms.Button btnStudents;
         private System.Windows.Forms.Button btnTimetable;
         private System.Windows.Forms.Button btnExams;
+        private System.Windows.Forms.Button btnSubjects;
     }
 }

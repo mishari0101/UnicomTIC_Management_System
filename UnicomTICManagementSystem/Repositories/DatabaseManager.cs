@@ -279,5 +279,89 @@ namespace UnicomTICManagementSystem.Repositories
                 }
             }
         }
+        // --- Subject Management Methods ---
+
+        // 1. READ: Gets all subjects from the database.
+        public static List<Subject> GetAllSubjects()
+        {
+            var subjects = new List<Subject>();
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                // This SQL query joins the Subjects table (aliased as 's') with the
+                // Courses table (aliased as 'c') to get the CourseName for each subject.
+                string query = @"
+            SELECT s.SubjectID, s.SubjectName, s.CourseID, c.CourseName 
+            FROM Subjects s
+            LEFT JOIN Courses c ON s.CourseID = c.CourseID";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var subject = new Subject
+                            {
+                                SubjectID = reader.GetInt32(0),
+                                SubjectName = reader.GetString(1),
+                                CourseID = reader.GetInt32(2),
+                                CourseName = reader.IsDBNull(3) ? "N/A" : reader.GetString(3)
+                            };
+                            subjects.Add(subject);
+                        }
+                    }
+                }
+            }
+            return subjects;
+        }
+
+        // 2. CREATE: Adds a new subject to the database.
+        public static void AddSubject(string subjectName, int courseId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "INSERT INTO Subjects (SubjectName, CourseID) VALUES (@subjectName, @courseId)";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@subjectName", subjectName);
+                    command.Parameters.AddWithValue("@courseId", courseId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // 3. UPDATE: Changes an existing subject's name or course.
+        public static void UpdateSubject(int subjectId, string newName, int newCourseId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "UPDATE Subjects SET SubjectName = @name, CourseID = @courseId WHERE SubjectID = @subjectId";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@name", newName);
+                    command.Parameters.AddWithValue("@courseId", newCourseId);
+                    command.Parameters.AddWithValue("@subjectId", subjectId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // 4. DELETE: Removes a subject from the database.
+        public static void DeleteSubject(int subjectId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "DELETE FROM Subjects WHERE SubjectID = @subjectId";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@subjectId", subjectId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }
