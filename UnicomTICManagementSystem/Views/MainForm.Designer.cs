@@ -30,88 +30,126 @@ namespace UnicomTICManagementSystem.Views
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnCourses = new System.Windows.Forms.Button();
-            this.btnStudents = new System.Windows.Forms.Button();
-            this.btnTimetable = new System.Windows.Forms.Button();
-            this.btnExams = new System.Windows.Forms.Button();
-            this.btnSubjects = new System.Windows.Forms.Button();
-            this.btnRooms = new System.Windows.Forms.Button();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.manageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.coursesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.studentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.subjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.roomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.examsMarksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.timetableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // btnCourses
+            // menuStrip1
             // 
-            this.btnCourses.Location = new System.Drawing.Point(95, 29);
-            this.btnCourses.Name = "btnCourses";
-            this.btnCourses.Size = new System.Drawing.Size(208, 39);
-            this.btnCourses.TabIndex = 0;
-            this.btnCourses.Text = "Manage Courses";
-            this.btnCourses.UseVisualStyleBackColor = true;
-            this.btnCourses.Click += new System.EventHandler(this.btnCourses_Click);
+            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.manageToolStripMenuItem,
+            this.viewToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(800, 33);
+            this.menuStrip1.TabIndex = 0;
+            this.menuStrip1.Text = "menuStrip1";
             // 
-            // btnStudents
+            // fileToolStripMenuItem
             // 
-            this.btnStudents.Location = new System.Drawing.Point(95, 87);
-            this.btnStudents.Name = "btnStudents";
-            this.btnStudents.Size = new System.Drawing.Size(208, 41);
-            this.btnStudents.TabIndex = 1;
-            this.btnStudents.Text = "Manage Students";
-            this.btnStudents.UseVisualStyleBackColor = true;
-            this.btnStudents.Click += new System.EventHandler(this.btnStudents_Click);
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exitToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(54, 29);
+            this.fileToolStripMenuItem.Text = "&File";
             // 
-            // btnTimetable
+            // exitToolStripMenuItem
             // 
-            this.btnTimetable.Location = new System.Drawing.Point(95, 225);
-            this.btnTimetable.Name = "btnTimetable";
-            this.btnTimetable.Size = new System.Drawing.Size(208, 39);
-            this.btnTimetable.TabIndex = 2;
-            this.btnTimetable.Text = "View Timetable";
-            this.btnTimetable.UseVisualStyleBackColor = true;
-            this.btnTimetable.Click += new System.EventHandler(this.btnTimetable_Click);
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(141, 34);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
-            // btnExams
+            // manageToolStripMenuItem
             // 
-            this.btnExams.Location = new System.Drawing.Point(95, 294);
-            this.btnExams.Name = "btnExams";
-            this.btnExams.Size = new System.Drawing.Size(208, 42);
-            this.btnExams.TabIndex = 3;
-            this.btnExams.Text = "Manage Exams & Marks";
-            this.btnExams.UseVisualStyleBackColor = true;
+            this.manageToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.coursesToolStripMenuItem,
+            this.studentsToolStripMenuItem,
+            this.subjectsToolStripMenuItem,
+            this.roomsToolStripMenuItem,
+            this.examsMarksToolStripMenuItem});
+            this.manageToolStripMenuItem.Name = "manageToolStripMenuItem";
+            this.manageToolStripMenuItem.Size = new System.Drawing.Size(92, 29);
+            this.manageToolStripMenuItem.Text = "&Manage";
             // 
-            // btnSubjects
+            // coursesToolStripMenuItem
             // 
-            this.btnSubjects.Location = new System.Drawing.Point(95, 153);
-            this.btnSubjects.Name = "btnSubjects";
-            this.btnSubjects.Size = new System.Drawing.Size(208, 41);
-            this.btnSubjects.TabIndex = 4;
-            this.btnSubjects.Text = "Manage Subjects";
-            this.btnSubjects.UseVisualStyleBackColor = true;
-            this.btnSubjects.Click += new System.EventHandler(this.btnSubjects_Click);
+            this.coursesToolStripMenuItem.Name = "coursesToolStripMenuItem";
+            this.coursesToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.coursesToolStripMenuItem.Text = "Courses";
+            this.coursesToolStripMenuItem.Click += new System.EventHandler(this.coursesToolStripMenuItem_Click);
             // 
-            // btnRooms
+            // studentsToolStripMenuItem
             // 
-            this.btnRooms.Location = new System.Drawing.Point(95, 370);
-            this.btnRooms.Name = "btnRooms";
-            this.btnRooms.Size = new System.Drawing.Size(208, 39);
-            this.btnRooms.TabIndex = 5;
-            this.btnRooms.Text = "Manage Rooms";
-            this.btnRooms.UseVisualStyleBackColor = true;
-            this.btnRooms.Click += new System.EventHandler(this.btnRooms_Click);
+            this.studentsToolStripMenuItem.Name = "studentsToolStripMenuItem";
+            this.studentsToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.studentsToolStripMenuItem.Text = "Students";
+            this.studentsToolStripMenuItem.Click += new System.EventHandler(this.studentsToolStripMenuItem_Click);
+            // 
+            // subjectsToolStripMenuItem
+            // 
+            this.subjectsToolStripMenuItem.Name = "subjectsToolStripMenuItem";
+            this.subjectsToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.subjectsToolStripMenuItem.Text = "Subjects";
+            this.subjectsToolStripMenuItem.Click += new System.EventHandler(this.subjectsToolStripMenuItem_Click);
+            // 
+            // roomsToolStripMenuItem
+            // 
+            this.roomsToolStripMenuItem.Name = "roomsToolStripMenuItem";
+            this.roomsToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.roomsToolStripMenuItem.Text = "Rooms";
+            this.roomsToolStripMenuItem.Click += new System.EventHandler(this.roomsToolStripMenuItem_Click);
+            // 
+            // examsMarksToolStripMenuItem
+            // 
+            this.examsMarksToolStripMenuItem.Name = "examsMarksToolStripMenuItem";
+            this.examsMarksToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.examsMarksToolStripMenuItem.Text = "Exams & Marks";
+            this.examsMarksToolStripMenuItem.Click += new System.EventHandler(this.examsMarksToolStripMenuItem_Click);
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.timetableToolStripMenuItem});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
+            this.viewToolStripMenuItem.Text = "&View";
+            // 
+            // timetableToolStripMenuItem
+            // 
+            this.timetableToolStripMenuItem.Name = "timetableToolStripMenuItem";
+            this.timetableToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.timetableToolStripMenuItem.Text = "Timetable";
+            this.timetableToolStripMenuItem.Click += new System.EventHandler(this.timetableToolStripMenuItem_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 480);
-            this.Controls.Add(this.btnRooms);
-            this.Controls.Add(this.btnSubjects);
-            this.Controls.Add(this.btnExams);
-            this.Controls.Add(this.btnTimetable);
-            this.Controls.Add(this.btnStudents);
-            this.Controls.Add(this.btnCourses);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "MainForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -122,11 +160,16 @@ namespace UnicomTICManagementSystem.Views
 
         #endregion
 
-        private System.Windows.Forms.Button btnCourses;
-        private System.Windows.Forms.Button btnStudents;
-        private System.Windows.Forms.Button btnTimetable;
-        private System.Windows.Forms.Button btnExams;
-        private System.Windows.Forms.Button btnSubjects;
-        private System.Windows.Forms.Button btnRooms;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem manageToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem coursesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem studentsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem subjectsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem roomsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem examsMarksToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem timetableToolStripMenuItem;
     }
 }

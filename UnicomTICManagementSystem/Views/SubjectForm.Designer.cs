@@ -128,6 +128,7 @@
             this.Controls.Add(this.dgvSubjects);
             this.Name = "SubjectForm";
             this.Text = "SubjectForm";
+            this.Load += new System.EventHandler(this.SubjectForm_Load);
             this.Click += new System.EventHandler(this.SubjectForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvSubjects)).EndInit();
             this.ResumeLayout(false);

@@ -1,7 +1,9 @@
-﻿using System.Data.SQLite;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Data.SQLite;
 using System.IO;
-using System.Collections.Generic; // For using List<>
-using UnicomTICManagementSystem.Models; // To access the Course class
+using UnicomTICManagementSystem.Models;
 
 namespace UnicomTICManagementSystem.Repositories
 {
@@ -519,6 +521,151 @@ namespace UnicomTICManagementSystem.Repositories
                 {
                     command.Parameters.AddWithValue("@id", timetableId);
                     command.ExecuteNonQuery();
+                }
+            }
+        }
+        // --- Exam Management Methods ---
+
+        public static List<Exam> GetAllExams()
+        {
+            var exams = new List<Exam>();
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                // Join with Subjects table to get the SubjectName for display
+                string query = @"
+            SELECT e.ExamID, e.ExamName, e.SubjectID, s.SubjectName 
+            FROM Exams e
+            LEFT JOIN Subjects s ON e.SubjectID = s.SubjectID";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            exams.Add(new Exam
+                            {
+                                ExamID = reader.GetInt32(0),
+                                ExamName = reader.GetString(1),
+                                SubjectID = reader.GetInt32(2),
+                                SubjectName = reader.IsDBNull(3) ? "N/A" : reader.GetString(3)
+                            });
+                        }
+                    }
+                }
+            }
+            return exams;
+        }
+
+        public static void AddExam(string examName, int subjectId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "INSERT INTO Exams (ExamName, SubjectID) VALUES (@name, @subjectId)";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@name", examName);
+                    command.Parameters.AddWithValue("@subjectId", subjectId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // --- Marks Management Methods ---
+
+        // This is a powerful method. For a given exam, it gets all relevant students
+        // and joins their existing mark if they have one.
+        public static List<Mark> GetMarksForExam(int examId)
+        {
+            var marks = new List<Mark>();
+            var examSubjectIdQuery = "SELECT SubjectID FROM Exams WHERE ExamID = @examId";
+            int subjectId;
+
+            // First, find out which subject this exam belongs to.
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var command = new SQLiteCommand(examSubjectIdQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@examId", examId);
+                    var result = command.ExecuteScalar(); // Gets a single value
+                    if (result == null || result == DBNull.Value) return marks; // No subject found, return empty list
+                    subjectId = Convert.ToInt32(result);
+                }
+
+                // Now, get all students in that subject's course and LEFT JOIN their marks for this exam.
+                string query = @"
+            SELECT s.StudentID, s.Name, m.MarkID, m.Score
+            FROM Students s
+            LEFT JOIN Marks m ON s.StudentID = m.StudentID AND m.ExamID = @examId
+            WHERE s.CourseID = (SELECT CourseID FROM Subjects WHERE SubjectID = @subjectId)";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@examId", examId);
+                    command.Parameters.AddWithValue("@subjectId", subjectId);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            marks.Add(new Mark
+                            {
+                                StudentID = reader.GetInt32(0),
+                                StudentName = reader.GetString(1),
+                                MarkID = reader.IsDBNull(2) ? 0 : reader.GetInt32(2), // MarkID is 0 if no mark exists yet
+                                ExamID = examId,
+                                // Score can be null if no mark has been entered
+                                Score = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3)
+                            });
+                        }
+                    }
+                }
+            }
+            return marks;
+        }// This is an "Upsert" method. It INSERTS a new mark or UPDATES an existing one.
+        public static void SaveOrUpdateMark(int studentId, int examId, int score)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+
+                // Step 1: Check if a mark already exists for this student and exam.
+                string checkQuery = "SELECT MarkID FROM Marks WHERE StudentID = @studentId AND ExamID = @examId";
+
+                // Create the command to check for an existing mark
+                var checkCommand = new SQLiteCommand(checkQuery, connection);
+                checkCommand.Parameters.AddWithValue("@studentId", studentId);
+                checkCommand.Parameters.AddWithValue("@examId", examId);
+
+                // Execute the command and get the result (which will be the MarkID or null)
+                object markIdResult = checkCommand.ExecuteScalar();
+
+                // Step 2: Decide whether to UPDATE or INSERT.
+                if (markIdResult != null && markIdResult != DBNull.Value)
+                {
+                    // --- UPDATE an existing mark ---
+                    int existingMarkId = Convert.ToInt32(markIdResult);
+                    string updateQuery = "UPDATE Marks SET Score = @score WHERE MarkID = @markId";
+
+                    var updateCommand = new SQLiteCommand(updateQuery, connection);
+                    updateCommand.Parameters.AddWithValue("@score", score);
+                    updateCommand.Parameters.AddWithValue("@markId", existingMarkId); // Use the converted ID
+
+                    updateCommand.ExecuteNonQuery();
+                }
+                else
+                {
+                    // --- INSERT a new mark ---
+                    string insertQuery = "INSERT INTO Marks (StudentID, ExamID, Score) VALUES (@studentId, @examId, @score)";
+
+                    var insertCommand = new SQLiteCommand(insertQuery, connection);
+                    insertCommand.Parameters.AddWithValue("@studentId", studentId);
+                    insertCommand.Parameters.AddWithValue("@examId", examId);
+                    insertCommand.Parameters.AddWithValue("@score", score);
+
+                    insertCommand.ExecuteNonQuery();
                 }
             }
         }

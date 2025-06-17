@@ -17,8 +17,9 @@ namespace UnicomTICManagementSystem.Views
         // This method runs automatically when the form is opened.
         private void SubjectForm_Load(object sender, EventArgs e)
         {
-            LoadCoursesDropdown(); // Must load courses first for the dropdown
-            LoadSubjectsGrid();    // Then load the subjects into the grid
+            // The order here is very important!
+            LoadCoursesDropdown(); // Must load courses first for the dropdown.
+            LoadSubjectsGrid();    // Then load the subjects into the grid.
         }
 
         private void LoadSubjectsGrid()
@@ -33,10 +34,15 @@ namespace UnicomTICManagementSystem.Views
                 dgvSubjects.Columns["CourseID"].Visible = false;
         }
 
+        // This is the critical method for your problem.
         private void LoadCoursesDropdown()
         {
-            cmbCourses.DataSource = _subjectController.GetAllCourses();
-            cmbCourses.DisplayMember = "CourseName"; // The text the user sees
+            // It gets the list of courses from the controller...
+            var courses = _subjectController.GetAllCourses();
+
+            // ...and sets them as the data source for the dropdown.
+            cmbCourses.DataSource = courses;
+            cmbCourses.DisplayMember = "CourseName"; // What the user sees
             cmbCourses.ValueMember = "CourseID";     // The hidden ID value we use
         }
 
@@ -55,7 +61,7 @@ namespace UnicomTICManagementSystem.Views
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (dgvSubjects.CurrentRow == null) return; // Nothing selected
+            if (dgvSubjects.CurrentRow == null) return;
 
             int subjectId = Convert.ToInt32(dgvSubjects.CurrentRow.Cells["SubjectID"].Value);
             _subjectController.UpdateSubject(subjectId, txtSubjectName.Text, (int)cmbCourses.SelectedValue);
@@ -66,7 +72,7 @@ namespace UnicomTICManagementSystem.Views
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (dgvSubjects.CurrentRow == null) return; // Nothing selected
+            if (dgvSubjects.CurrentRow == null) return;
 
             var confirm = MessageBox.Show("Are you sure?", "Confirm Delete", MessageBoxButtons.YesNo);
             if (confirm == DialogResult.Yes)

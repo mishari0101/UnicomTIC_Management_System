@@ -1,91 +1,85 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using UnicomTICManagementSystem.Models;
-using UnicomTICManagementSystem.Views;
 
 namespace UnicomTICManagementSystem.Views
 {
     public partial class MainForm : Form
     {
         private User loggedInUser;
+
         public MainForm(User user)
         {
             InitializeComponent();
             loggedInUser = user;
             SetupDashboard();
-
         }
+
         private void SetupDashboard()
         {
-            // By default, hide all management buttons
-            btnCourses.Visible = false;
-            btnStudents.Visible = false;
-            btnExams.Visible = false;
-            // Timetable is visible to all, so we don't hide it
+            // Default to the most secure view: hide the entire "Manage" menu.
+            manageToolStripMenuItem.Visible = false;
 
-            // Show buttons based on role
-            switch (loggedInUser.Role)
+            // Grant permissions based on role.
+            if (loggedInUser != null && string.Equals(loggedInUser.Role, "Admin", StringComparison.OrdinalIgnoreCase))
             {
-                case "Admin":
-                    // Admin sees everything
-                    btnCourses.Visible = true;
-                    btnStudents.Visible = true;
-                    btnExams.Visible = true;
-                    break;
-                case "Staff":
-                    // Staff can manage exams and view timetable
-                    btnExams.Visible = true;
-                    break;
-                case "Lecturer":
-                    // Lecturer can manage exams and view timetable
-                    btnExams.Visible = true;
-                    break;
-                case "Student":
-                    // Student can only view their stuff (we'll handle this inside the forms)
-                    break;
+                // If the user is an Admin, show the "Manage" menu.
+                manageToolStripMenuItem.Visible = true;
             }
         }
 
-        // Event handler for the Courses button
-        private void btnCourses_Click(object sender, EventArgs e)
+        // --- Menu Item Event Handlers ---
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Create a new instance of our CourseForm
-            CourseForm courseManagementForm = new CourseForm();
-            // Show it to the user
-            courseManagementForm.Show();
+            Application.Exit();
         }
-        private void btnStudents_Click(object sender, EventArgs e)
+
+        private void coursesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CourseForm courseForm = new CourseForm();
+            courseForm.Show();
+        }
+
+        private void studentsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             StudentForm studentForm = new StudentForm();
             studentForm.Show();
         }
 
-        private void btnSubjects_Click(object sender, EventArgs e)
+        private void subjectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SubjectForm subjectForm = new SubjectForm();
             subjectForm.Show();
         }
 
-        private void btnRooms_Click(object sender, EventArgs e)
+
+
+        private void roomsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RoomForm roomForm = new RoomForm();
             roomForm.Show();
         }
 
-        private void btnTimetable_Click(object sender, EventArgs e)
+        private void examsMarksToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            ExamForm examForm = new ExamForm();
+            examForm.Show();
+        }
+
+        private void timetableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Pass the user information to the TimetableForm so it knows what to show.
             TimetableForm timetableForm = new TimetableForm(loggedInUser);
             timetableForm.Show();
         }
+
+        // --- Form Event Handlers ---
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Ensures the entire application quits when this form is closed.
+            Application.Exit();
+        }
     }
 }
-
-
-

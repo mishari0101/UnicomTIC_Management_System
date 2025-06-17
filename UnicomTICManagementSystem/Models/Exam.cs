@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace UnicomTICManagementSystem.Models
 {
-    internal class Exam
+    public class Exam
     {
+        public int ExamID { get; set; }
+        public string ExamName { get; set; }
+        public int SubjectID { get; set; }
+
+        // Helper property for display purposes
+        public string SubjectName { get; set; }
     }
 }
