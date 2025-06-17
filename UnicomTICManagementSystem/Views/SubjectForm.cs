@@ -78,7 +78,6 @@ namespace UnicomTICManagementSystem.Views
             }
         }
 
-        // Fills the textboxes when you click on a row in the grid.
         private void dgvSubjects_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0 && dgvSubjects.CurrentRow != null)
