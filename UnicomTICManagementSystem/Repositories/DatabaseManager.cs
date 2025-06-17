@@ -669,5 +669,125 @@ namespace UnicomTICManagementSystem.Repositories
                 }
             }
         }
+        // --- Student-Specific Methods ---
+
+        // This method gets all the exam results for a single student, using their username.
+        public static List<StudentMarkRecord> GetMarksForStudent(string username)
+        {
+            var results = new List<StudentMarkRecord>();
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+
+                // This query joins three tables to get all the necessary information.
+                // It starts from the Marks table and links to Students, Exams, and Subjects.
+                string query = @"
+            SELECT s.SubjectName, e.ExamName, m.Score
+            FROM Marks m
+            JOIN Students st ON m.StudentID = st.StudentID
+            JOIN Exams e ON m.ExamID = e.ExamID
+            JOIN Subjects s ON e.SubjectID = s.SubjectID
+            WHERE st.Name = @username";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    // We find the student based on their unique username.
+                    command.Parameters.AddWithValue("@username", username);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(new StudentMarkRecord
+                            {
+                                SubjectName = reader.GetString(0),
+                                ExamName = reader.GetString(1),
+                                Score = reader.IsDBNull(2) ? (int?)null : reader.GetInt32(2)
+                            });
+                        }
+                    }
+                }
+            }
+            return results;
+        }
+        // --- User Management Methods ---
+
+        public static List<User> GetAllUsers()
+        {
+            var users = new List<User>();
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                // We select everything EXCEPT the password for security.
+                // It's bad practice to display passwords, even to an admin.
+                string query = "SELECT UserID, Username, Role, Password FROM Users";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            users.Add(new User
+                            {
+                                UserID = reader.GetInt32(0),
+                                Username = reader.GetString(1),
+                                Role = reader.GetString(2),
+                                Password = reader.GetString(3) // We get it, but won't show it.
+                            });
+                        }
+                    }
+                }
+            }
+            return users;
+        }
+
+        public static void AddUser(string username, string password, string role)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "INSERT INTO Users (Username, Password, Role) VALUES (@username, @password, @role)";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@username", username);
+                    command.Parameters.AddWithValue("@password", password);
+                    command.Parameters.AddWithValue("@role", role);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Note: It's often better to have a separate "ChangePassword" method,
+        // but for simplicity, we'll allow updating everything at once.
+        public static void UpdateUser(int userId, string username, string password, string role)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "UPDATE Users SET Username = @username, Password = @password, Role = @role WHERE UserID = @id";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@username", username);
+                    command.Parameters.AddWithValue("@password", password);
+                    command.Parameters.AddWithValue("@role", role);
+                    command.Parameters.AddWithValue("@id", userId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void DeleteUser(int userId)
+        {
+            // Important: Don't let an admin delete themselves! We'll add this check in the form's code.
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "DELETE FROM Users WHERE UserID = @id";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@id", userId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }

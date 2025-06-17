@@ -41,6 +41,8 @@ namespace UnicomTICManagementSystem.Views
             this.examsMarksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timetableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.myMarksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.userAccountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -80,7 +82,8 @@ namespace UnicomTICManagementSystem.Views
             this.studentsToolStripMenuItem,
             this.subjectsToolStripMenuItem,
             this.roomsToolStripMenuItem,
-            this.examsMarksToolStripMenuItem});
+            this.examsMarksToolStripMenuItem,
+            this.userAccountsToolStripMenuItem});
             this.manageToolStripMenuItem.Name = "manageToolStripMenuItem";
             this.manageToolStripMenuItem.Size = new System.Drawing.Size(92, 29);
             this.manageToolStripMenuItem.Text = "&Manage";
@@ -123,7 +126,8 @@ namespace UnicomTICManagementSystem.Views
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.timetableToolStripMenuItem});
+            this.timetableToolStripMenuItem,
+            this.myMarksToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
             this.viewToolStripMenuItem.Text = "&View";
@@ -134,6 +138,20 @@ namespace UnicomTICManagementSystem.Views
             this.timetableToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.timetableToolStripMenuItem.Text = "Timetable";
             this.timetableToolStripMenuItem.Click += new System.EventHandler(this.timetableToolStripMenuItem_Click);
+            // 
+            // myMarksToolStripMenuItem
+            // 
+            this.myMarksToolStripMenuItem.Name = "myMarksToolStripMenuItem";
+            this.myMarksToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.myMarksToolStripMenuItem.Text = "My &Marks";
+            this.myMarksToolStripMenuItem.Click += new System.EventHandler(this.myMarksToolStripMenuItem_Click);
+            // 
+            // userAccountsToolStripMenuItem
+            // 
+            this.userAccountsToolStripMenuItem.Name = "userAccountsToolStripMenuItem";
+            this.userAccountsToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.userAccountsToolStripMenuItem.Text = "&User Accounts";
+            this.userAccountsToolStripMenuItem.Click += new System.EventHandler(this.userAccountsToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -171,5 +189,7 @@ namespace UnicomTICManagementSystem.Views
         private System.Windows.Forms.ToolStripMenuItem examsMarksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem timetableToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem myMarksToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem userAccountsToolStripMenuItem;
     }
 }

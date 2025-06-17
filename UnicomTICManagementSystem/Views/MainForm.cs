@@ -19,6 +19,7 @@ namespace UnicomTICManagementSystem.Views
         {
             // Default to the most secure view: hide the entire "Manage" menu.
             manageToolStripMenuItem.Visible = false;
+            myMarksToolStripMenuItem.Visible = false; // Hide "My Marks" by default
 
             // Grant permissions based on role.
             if (loggedInUser != null && string.Equals(loggedInUser.Role, "Admin", StringComparison.OrdinalIgnoreCase))
@@ -26,6 +27,12 @@ namespace UnicomTICManagementSystem.Views
                 // If the user is an Admin, show the "Manage" menu.
                 manageToolStripMenuItem.Visible = true;
             }
+            else if (string.Equals(loggedInUser.Role, "Student", StringComparison.OrdinalIgnoreCase))
+            {
+                // If the user is a Student, show the "My Marks" menu.
+                myMarksToolStripMenuItem.Visible = true;
+            }
+            // You could add more 'else if' blocks here for Staff, Lecturer, etc.
         }
 
         // --- Menu Item Event Handlers ---
@@ -80,6 +87,19 @@ namespace UnicomTICManagementSystem.Views
         {
             // Ensures the entire application quits when this form is closed.
             Application.Exit();
+        }
+
+        private void myMarksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Open the new form, passing the logged-in user's information
+            StudentMarksForm marksForm = new StudentMarksForm(loggedInUser);
+            marksForm.Show();
+        }
+
+        private void userAccountsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UserForm userForm = new UserForm(loggedInUser);
+            userForm.Show();
         }
     }
 }
