@@ -12,6 +12,11 @@ namespace UnicomTICManagementSystem.Views
         {
             InitializeComponent();
             loggedInUser = user;
+            
+        }
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            // ...and PLACED here instead.
             SetupDashboard();
         }
 

@@ -171,10 +171,6 @@ namespace UnicomTICManagementSystem.Views
 
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
         #endregion
 
