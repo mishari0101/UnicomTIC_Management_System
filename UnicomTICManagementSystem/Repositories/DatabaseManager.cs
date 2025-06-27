@@ -1,7 +1,9 @@
-﻿using System.Data.SQLite;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Data.SQLite;
 using System.IO;
-using System.Collections.Generic; // For using List<>
-using UnicomTICManagementSystem.Models; // To access the Course class
+using UnicomTICManagementSystem.Models;
 
 namespace UnicomTICManagementSystem.Repositories
 {
@@ -275,6 +277,514 @@ namespace UnicomTICManagementSystem.Repositories
                 using (var command = new SQLiteCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@studentId", studentId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        // --- Subject Management Methods ---
+
+        // 1. READ: Gets all subjects from the database.
+        public static List<Subject> GetAllSubjects()
+        {
+            var subjects = new List<Subject>();
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                // This SQL query joins the Subjects table (aliased as 's') with the
+                // Courses table (aliased as 'c') to get the CourseName for each subject.
+                string query = @"
+            SELECT s.SubjectID, s.SubjectName, s.CourseID, c.CourseName 
+            FROM Subjects s
+            LEFT JOIN Courses c ON s.CourseID = c.CourseID";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var subject = new Subject
+                            {
+                                SubjectID = reader.GetInt32(0),
+                                SubjectName = reader.GetString(1),
+                                CourseID = reader.GetInt32(2),
+                                CourseName = reader.IsDBNull(3) ? "N/A" : reader.GetString(3)
+                            };
+                            subjects.Add(subject);
+                        }
+                    }
+                }
+            }
+            return subjects;
+        }
+
+        // 2. CREATE: Adds a new subject to the database.
+        public static void AddSubject(string subjectName, int courseId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "INSERT INTO Subjects (SubjectName, CourseID) VALUES (@subjectName, @courseId)";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@subjectName", subjectName);
+                    command.Parameters.AddWithValue("@courseId", courseId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // 3. UPDATE: Changes an existing subject's name or course.
+        public static void UpdateSubject(int subjectId, string newName, int newCourseId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "UPDATE Subjects SET SubjectName = @name, CourseID = @courseId WHERE SubjectID = @subjectId";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@name", newName);
+                    command.Parameters.AddWithValue("@courseId", newCourseId);
+                    command.Parameters.AddWithValue("@subjectId", subjectId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // 4. DELETE: Removes a subject from the database.
+        public static void DeleteSubject(int subjectId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "DELETE FROM Subjects WHERE SubjectID = @subjectId";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@subjectId", subjectId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        // --- Room Management Methods ---
+
+        public static List<Room> GetAllRooms()
+        {
+            var rooms = new List<Room>();
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "SELECT RoomID, RoomName, RoomType FROM Rooms";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var room = new Room
+                            {
+                                RoomID = reader.GetInt32(0),
+                                RoomName = reader.GetString(1),
+                                RoomType = reader.GetString(2)
+                            };
+                            rooms.Add(room);
+                        }
+                    }
+                }
+            }
+            return rooms;
+        }
+
+        public static void AddRoom(string roomName, string roomType)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "INSERT INTO Rooms (RoomName, RoomType) VALUES (@roomName, @roomType)";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@roomName", roomName);
+                    command.Parameters.AddWithValue("@roomType", roomType);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void UpdateRoom(int roomId, string newName, string newType)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "UPDATE Rooms SET RoomName = @name, RoomType = @type WHERE RoomID = @id";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@name", newName);
+                    command.Parameters.AddWithValue("@type", newType);
+                    command.Parameters.AddWithValue("@id", roomId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void DeleteRoom(int roomId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "DELETE FROM Rooms WHERE RoomID = @id";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@id", roomId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        // --- Timetable Management Methods ---
+
+        public static List<Timetable> GetAllTimetableEntries()
+        {
+            var entries = new List<Timetable>();
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                // This is our most advanced query yet!
+                // It joins THREE tables: Timetables (t), Subjects (s), and Rooms (r).
+                // This allows us to get the SubjectName and RoomName in a single database call.
+                string query = @"
+            SELECT t.TimetableID, t.TimeSlot, s.SubjectName, r.RoomName, t.SubjectID, t.RoomID
+            FROM Timetables t
+            LEFT JOIN Subjects s ON t.SubjectID = s.SubjectID
+            LEFT JOIN Rooms r ON t.RoomID = r.RoomID";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var entry = new Timetable
+                            {
+                                TimetableID = reader.GetInt32(0),
+                                TimeSlot = reader.GetString(1),
+                                SubjectName = reader.IsDBNull(2) ? "N/A" : reader.GetString(2),
+                                RoomName = reader.IsDBNull(3) ? "N/A" : reader.GetString(3),
+                                SubjectID = reader.GetInt32(4),
+                                RoomID = reader.GetInt32(5)
+                            };
+                            entries.Add(entry);
+                        }
+                    }
+                }
+            }
+            return entries;
+        }
+
+        public static void AddTimetableEntry(string timeSlot, int subjectId, int roomId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "INSERT INTO Timetables (TimeSlot, SubjectID, RoomID) VALUES (@timeSlot, @subjectId, @roomId)";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@timeSlot", timeSlot);
+                    command.Parameters.AddWithValue("@subjectId", subjectId);
+                    command.Parameters.AddWithValue("@roomId", roomId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void UpdateTimetableEntry(int timetableId, string newTimeSlot, int newSubjectId, int newRoomId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "UPDATE Timetables SET TimeSlot = @timeSlot, SubjectID = @subjectId, RoomID = @roomId WHERE TimetableID = @id";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@timeSlot", newTimeSlot);
+                    command.Parameters.AddWithValue("@subjectId", newSubjectId);
+                    command.Parameters.AddWithValue("@roomId", newRoomId);
+                    command.Parameters.AddWithValue("@id", timetableId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void DeleteTimetableEntry(int timetableId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "DELETE FROM Timetables WHERE TimetableID = @id";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@id", timetableId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        // --- Exam Management Methods ---
+
+        public static List<Exam> GetAllExams()
+        {
+            var exams = new List<Exam>();
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                // Join with Subjects table to get the SubjectName for display
+                string query = @"
+            SELECT e.ExamID, e.ExamName, e.SubjectID, s.SubjectName 
+            FROM Exams e
+            LEFT JOIN Subjects s ON e.SubjectID = s.SubjectID";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            exams.Add(new Exam
+                            {
+                                ExamID = reader.GetInt32(0),
+                                ExamName = reader.GetString(1),
+                                SubjectID = reader.GetInt32(2),
+                                SubjectName = reader.IsDBNull(3) ? "N/A" : reader.GetString(3)
+                            });
+                        }
+                    }
+                }
+            }
+            return exams;
+        }
+
+        public static void AddExam(string examName, int subjectId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "INSERT INTO Exams (ExamName, SubjectID) VALUES (@name, @subjectId)";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@name", examName);
+                    command.Parameters.AddWithValue("@subjectId", subjectId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // --- Marks Management Methods ---
+
+        // This is a powerful method. For a given exam, it gets all relevant students
+        // and joins their existing mark if they have one.
+        public static List<Mark> GetMarksForExam(int examId)
+        {
+            var marks = new List<Mark>();
+            var examSubjectIdQuery = "SELECT SubjectID FROM Exams WHERE ExamID = @examId";
+            int subjectId;
+
+            // First, find out which subject this exam belongs to.
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var command = new SQLiteCommand(examSubjectIdQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@examId", examId);
+                    var result = command.ExecuteScalar(); // Gets a single value
+                    if (result == null || result == DBNull.Value) return marks; // No subject found, return empty list
+                    subjectId = Convert.ToInt32(result);
+                }
+
+                // Now, get all students in that subject's course and LEFT JOIN their marks for this exam.
+                string query = @"
+            SELECT s.StudentID, s.Name, m.MarkID, m.Score
+            FROM Students s
+            LEFT JOIN Marks m ON s.StudentID = m.StudentID AND m.ExamID = @examId
+            WHERE s.CourseID = (SELECT CourseID FROM Subjects WHERE SubjectID = @subjectId)";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@examId", examId);
+                    command.Parameters.AddWithValue("@subjectId", subjectId);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            marks.Add(new Mark
+                            {
+                                StudentID = reader.GetInt32(0),
+                                StudentName = reader.GetString(1),
+                                MarkID = reader.IsDBNull(2) ? 0 : reader.GetInt32(2), // MarkID is 0 if no mark exists yet
+                                ExamID = examId,
+                                // Score can be null if no mark has been entered
+                                Score = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3)
+                            });
+                        }
+                    }
+                }
+            }
+            return marks;
+        }// This is an "Upsert" method. It INSERTS a new mark or UPDATES an existing one.
+        public static void SaveOrUpdateMark(int studentId, int examId, int score)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+
+                // Step 1: Check if a mark already exists for this student and exam.
+                string checkQuery = "SELECT MarkID FROM Marks WHERE StudentID = @studentId AND ExamID = @examId";
+
+                // Create the command to check for an existing mark
+                var checkCommand = new SQLiteCommand(checkQuery, connection);
+                checkCommand.Parameters.AddWithValue("@studentId", studentId);
+                checkCommand.Parameters.AddWithValue("@examId", examId);
+
+                // Execute the command and get the result (which will be the MarkID or null)
+                object markIdResult = checkCommand.ExecuteScalar();
+
+                // Step 2: Decide whether to UPDATE or INSERT.
+                if (markIdResult != null && markIdResult != DBNull.Value)
+                {
+                    // --- UPDATE an existing mark ---
+                    int existingMarkId = Convert.ToInt32(markIdResult);
+                    string updateQuery = "UPDATE Marks SET Score = @score WHERE MarkID = @markId";
+
+                    var updateCommand = new SQLiteCommand(updateQuery, connection);
+                    updateCommand.Parameters.AddWithValue("@score", score);
+                    updateCommand.Parameters.AddWithValue("@markId", existingMarkId); // Use the converted ID
+
+                    updateCommand.ExecuteNonQuery();
+                }
+                else
+                {
+                    // --- INSERT a new mark ---
+                    string insertQuery = "INSERT INTO Marks (StudentID, ExamID, Score) VALUES (@studentId, @examId, @score)";
+
+                    var insertCommand = new SQLiteCommand(insertQuery, connection);
+                    insertCommand.Parameters.AddWithValue("@studentId", studentId);
+                    insertCommand.Parameters.AddWithValue("@examId", examId);
+                    insertCommand.Parameters.AddWithValue("@score", score);
+
+                    insertCommand.ExecuteNonQuery();
+                }
+            }
+        }
+        // --- Student-Specific Methods ---
+
+        // This method gets all the exam results for a single student, using their username.
+        public static List<StudentMarkRecord> GetMarksForStudent(string username)
+        {
+            var results = new List<StudentMarkRecord>();
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+
+                // This query joins three tables to get all the necessary information.
+                // It starts from the Marks table and links to Students, Exams, and Subjects.
+                string query = @"
+            SELECT s.SubjectName, e.ExamName, m.Score
+            FROM Marks m
+            JOIN Students st ON m.StudentID = st.StudentID
+            JOIN Exams e ON m.ExamID = e.ExamID
+            JOIN Subjects s ON e.SubjectID = s.SubjectID
+            WHERE st.Name = @username";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    // We find the student based on their unique username.
+                    command.Parameters.AddWithValue("@username", username);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(new StudentMarkRecord
+                            {
+                                SubjectName = reader.GetString(0),
+                                ExamName = reader.GetString(1),
+                                Score = reader.IsDBNull(2) ? (int?)null : reader.GetInt32(2)
+                            });
+                        }
+                    }
+                }
+            }
+            return results;
+        }
+        // --- User Management Methods ---
+
+        public static List<User> GetAllUsers()
+        {
+            var users = new List<User>();
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                // We select everything EXCEPT the password for security.
+                // It's bad practice to display passwords, even to an admin.
+                string query = "SELECT UserID, Username, Role, Password FROM Users";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            users.Add(new User
+                            {
+                                UserID = reader.GetInt32(0),
+                                Username = reader.GetString(1),
+                                Role = reader.GetString(2),
+                                Password = reader.GetString(3) // We get it, but won't show it.
+                            });
+                        }
+                    }
+                }
+            }
+            return users;
+        }
+
+        public static void AddUser(string username, string password, string role)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "INSERT INTO Users (Username, Password, Role) VALUES (@username, @password, @role)";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@username", username);
+                    command.Parameters.AddWithValue("@password", password);
+                    command.Parameters.AddWithValue("@role", role);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Note: It's often better to have a separate "ChangePassword" method,
+        // but for simplicity, we'll allow updating everything at once.
+        public static void UpdateUser(int userId, string username, string password, string role)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "UPDATE Users SET Username = @username, Password = @password, Role = @role WHERE UserID = @id";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@username", username);
+                    command.Parameters.AddWithValue("@password", password);
+                    command.Parameters.AddWithValue("@role", role);
+                    command.Parameters.AddWithValue("@id", userId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void DeleteUser(int userId)
+        {
+            // Important: Don't let an admin delete themselves! We'll add this check in the form's code.
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "DELETE FROM Users WHERE UserID = @id";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@id", userId);
                     command.ExecuteNonQuery();
                 }
             }
