@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 using UnicomTICManagementSystem.Models;
 using UnicomTICManagementSystem.Repositories;
 
@@ -6,37 +8,46 @@ namespace UnicomTICManagementSystem.Controllers
 {
     public class ExamController
     {
-        // --- Methods for managing Exams ---
-
         public List<Exam> GetAllExams()
         {
-            return DatabaseManager.GetAllExams();
+            try { return DatabaseManager.GetAllExams(); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fetching exams: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return new List<Exam>();
+            }
         }
 
         public void AddExam(string examName, int subjectId)
         {
-            DatabaseManager.AddExam(examName, subjectId);
+            try { DatabaseManager.AddExam(examName, subjectId); }
+            catch (Exception ex) { MessageBox.Show("Error adding exam: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
-        // --- Methods for managing Marks ---
-
-        // Gets the list of students and their scores for a selected exam
         public List<Mark> GetMarksForExam(int examId)
         {
-            return DatabaseManager.GetMarksForExam(examId);
+            try { return DatabaseManager.GetMarksForExam(examId); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fetching marks for exam: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return new List<Mark>();
+            }
         }
 
-        // Tells the database to save a student's score
         public void SaveMark(int studentId, int examId, int score)
         {
-            DatabaseManager.SaveOrUpdateMark(studentId, examId, score);
+            try { DatabaseManager.SaveOrUpdateMark(studentId, examId, score); }
+            catch (Exception ex) { MessageBox.Show("Error saving mark: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
-
-        // --- Helper methods to get data for dropdown menus ---
 
         public List<Subject> GetAllSubjects()
         {
-            return DatabaseManager.GetAllSubjects();
+            try { return DatabaseManager.GetAllSubjects(); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fetching subjects: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return new List<Subject>();
+            }
         }
     }
 }

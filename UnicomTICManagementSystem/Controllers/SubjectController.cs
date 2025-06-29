@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 using UnicomTICManagementSystem.Models;
 using UnicomTICManagementSystem.Repositories;
 
@@ -6,34 +8,42 @@ namespace UnicomTICManagementSystem.Controllers
 {
     public class SubjectController
     {
-        // This method asks the DatabaseManager for all subjects.
         public List<Subject> GetAllSubjects()
         {
-            return DatabaseManager.GetAllSubjects();
+            try { return DatabaseManager.GetAllSubjects(); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fetching subjects: " + ex.Message, "Database Error");
+                return new List<Subject>();
+            }
         }
 
-        // We need this method again to fill our 'Course' dropdown menu on the form.
         public List<Course> GetAllCourses()
         {
-            return DatabaseManager.GetAllCourses();
+            try { return DatabaseManager.GetAllCourses(); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fetching courses: " + ex.Message, "Database Error");
+                return new List<Course>();
+            }
         }
 
-        // This method tells the DatabaseManager to add a subject.
         public void AddSubject(string subjectName, int courseId)
         {
-            DatabaseManager.AddSubject(subjectName, courseId);
+            try { DatabaseManager.AddSubject(subjectName, courseId); }
+            catch (Exception ex) { MessageBox.Show("Error adding subject: " + ex.Message, "Database Error"); }
         }
 
-        // This method tells the DatabaseManager to update a subject.
         public void UpdateSubject(int subjectId, string newName, int newCourseId)
         {
-            DatabaseManager.UpdateSubject(subjectId, newName, newCourseId);
+            try { DatabaseManager.UpdateSubject(subjectId, newName, newCourseId); }
+            catch (Exception ex) { MessageBox.Show("Error updating subject: " + ex.Message, "Database Error"); }
         }
 
-        // This method tells the DatabaseManager to delete a subject.
         public void DeleteSubject(int subjectId)
         {
-            DatabaseManager.DeleteSubject(subjectId);
+            try { DatabaseManager.DeleteSubject(subjectId); }
+            catch (Exception ex) { MessageBox.Show("Error deleting subject: " + ex.Message, "Database Error"); }
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Data.SQLite;
+﻿using System;
+using System.Windows.Forms;
+using UnicomTICManagementSystem.Helpers; // Make sure this is here
 using UnicomTICManagementSystem.Models;
 using UnicomTICManagementSystem.Repositories;
 
@@ -8,32 +10,21 @@ namespace UnicomTICManagementSystem.Controllers
     {
         public User AuthenticateUser(string username, string password)
         {
-            User user = null;
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            try
             {
-                connection.Open();
-                string query = "SELECT * FROM Users WHERE Username = @username AND Password = @password";
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@username", username);
-                    command.Parameters.AddWithValue("@password", password);
+                string providedPasswordHash = PasswordHelper.HashPassword(password);
+                // The actual authentication logic happens in the repository now, so we just call it.
+                // To keep the pattern clean, we should ideally have a method in DatabaseManager
+                // like GetUserByUsernameAndPasswordHash. For now, we'll assume the old way is there.
 
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            user = new User
-                            {
-                                UserID = reader.GetInt32(0),
-                                Username = reader.GetString(1),
-                                Password = reader.GetString(2),
-                                Role = reader.GetString(3)
-                            };
-                        }
-                    }
-                }
+                // Let's create a dedicated method in DatabaseManager to keep logic separate
+                return DatabaseManager.GetUserByCredentials(username, providedPasswordHash);
             }
-            return user; // Will be null if no user was found
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred during login: " + ex.Message, "Authentication Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null; // Return null to indicate login failure
+            }
         }
     }
 }

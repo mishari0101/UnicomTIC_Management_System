@@ -43,13 +43,11 @@ namespace UnicomTICManagementSystem.Views
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timetableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.myMarksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Logout = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
-            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
@@ -57,8 +55,8 @@ namespace UnicomTICManagementSystem.Views
             this.viewToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(6, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(800, 36);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
+            this.menuStrip1.Size = new System.Drawing.Size(533, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -67,13 +65,13 @@ namespace UnicomTICManagementSystem.Views
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(54, 29);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 22);
             this.fileToolStripMenuItem.Text = "&File";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(141, 34);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -87,48 +85,48 @@ namespace UnicomTICManagementSystem.Views
             this.examsMarksToolStripMenuItem,
             this.userAccountsToolStripMenuItem});
             this.manageToolStripMenuItem.Name = "manageToolStripMenuItem";
-            this.manageToolStripMenuItem.Size = new System.Drawing.Size(92, 29);
+            this.manageToolStripMenuItem.Size = new System.Drawing.Size(62, 22);
             this.manageToolStripMenuItem.Text = "&Manage";
             // 
             // coursesToolStripMenuItem
             // 
             this.coursesToolStripMenuItem.Name = "coursesToolStripMenuItem";
-            this.coursesToolStripMenuItem.Size = new System.Drawing.Size(227, 34);
+            this.coursesToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.coursesToolStripMenuItem.Text = "Courses";
             this.coursesToolStripMenuItem.Click += new System.EventHandler(this.coursesToolStripMenuItem_Click);
             // 
             // studentsToolStripMenuItem
             // 
             this.studentsToolStripMenuItem.Name = "studentsToolStripMenuItem";
-            this.studentsToolStripMenuItem.Size = new System.Drawing.Size(227, 34);
+            this.studentsToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.studentsToolStripMenuItem.Text = "Students";
             this.studentsToolStripMenuItem.Click += new System.EventHandler(this.studentsToolStripMenuItem_Click);
             // 
             // subjectsToolStripMenuItem
             // 
             this.subjectsToolStripMenuItem.Name = "subjectsToolStripMenuItem";
-            this.subjectsToolStripMenuItem.Size = new System.Drawing.Size(227, 34);
+            this.subjectsToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.subjectsToolStripMenuItem.Text = "Subjects";
             this.subjectsToolStripMenuItem.Click += new System.EventHandler(this.subjectsToolStripMenuItem_Click);
             // 
             // roomsToolStripMenuItem
             // 
             this.roomsToolStripMenuItem.Name = "roomsToolStripMenuItem";
-            this.roomsToolStripMenuItem.Size = new System.Drawing.Size(227, 34);
+            this.roomsToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.roomsToolStripMenuItem.Text = "Rooms";
             this.roomsToolStripMenuItem.Click += new System.EventHandler(this.roomsToolStripMenuItem_Click);
             // 
             // examsMarksToolStripMenuItem
             // 
             this.examsMarksToolStripMenuItem.Name = "examsMarksToolStripMenuItem";
-            this.examsMarksToolStripMenuItem.Size = new System.Drawing.Size(227, 34);
+            this.examsMarksToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.examsMarksToolStripMenuItem.Text = "Exams & Marks";
             this.examsMarksToolStripMenuItem.Click += new System.EventHandler(this.examsMarksToolStripMenuItem_Click);
             // 
             // userAccountsToolStripMenuItem
             // 
             this.userAccountsToolStripMenuItem.Name = "userAccountsToolStripMenuItem";
-            this.userAccountsToolStripMenuItem.Size = new System.Drawing.Size(227, 34);
+            this.userAccountsToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.userAccountsToolStripMenuItem.Text = "&User Accounts";
             this.userAccountsToolStripMenuItem.Click += new System.EventHandler(this.userAccountsToolStripMenuItem_Click);
             // 
@@ -138,48 +136,33 @@ namespace UnicomTICManagementSystem.Views
             this.timetableToolStripMenuItem,
             this.myMarksToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 22);
             this.viewToolStripMenuItem.Text = "&View";
             // 
             // timetableToolStripMenuItem
             // 
             this.timetableToolStripMenuItem.Name = "timetableToolStripMenuItem";
-            this.timetableToolStripMenuItem.Size = new System.Drawing.Size(192, 34);
+            this.timetableToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.timetableToolStripMenuItem.Text = "Timetable";
             this.timetableToolStripMenuItem.Click += new System.EventHandler(this.timetableToolStripMenuItem_Click);
             // 
             // myMarksToolStripMenuItem
             // 
             this.myMarksToolStripMenuItem.Name = "myMarksToolStripMenuItem";
-            this.myMarksToolStripMenuItem.Size = new System.Drawing.Size(192, 34);
+            this.myMarksToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.myMarksToolStripMenuItem.Text = "My &Marks";
             this.myMarksToolStripMenuItem.Click += new System.EventHandler(this.myMarksToolStripMenuItem_Click);
             // 
-            // Logout
-            // 
-            this.Logout.BackColor = System.Drawing.Color.Red;
-            this.Logout.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.Logout.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Logout.Font = new System.Drawing.Font("Microsoft YaHei", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Logout.ForeColor = System.Drawing.Color.White;
-            this.Logout.Location = new System.Drawing.Point(703, 1);
-            this.Logout.Name = "Logout";
-            this.Logout.Size = new System.Drawing.Size(85, 32);
-            this.Logout.TabIndex = 1;
-            this.Logout.Text = "Logout";
-            this.Logout.UseVisualStyleBackColor = false;
-            this.Logout.Click += new System.EventHandler(this.Logout_Click);
-            // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::UnicomTICManagementSystem.Properties.Resources.photo_1729525589450_aa9e4e83d94e1;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(800, 480);
-            this.Controls.Add(this.Logout);
+            this.ClientSize = new System.Drawing.Size(533, 312);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
@@ -207,6 +190,5 @@ namespace UnicomTICManagementSystem.Views
         private System.Windows.Forms.ToolStripMenuItem timetableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem myMarksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem userAccountsToolStripMenuItem;
-        private System.Windows.Forms.Button Logout;
     }
 }

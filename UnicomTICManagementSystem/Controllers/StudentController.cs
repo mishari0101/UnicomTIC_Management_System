@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 using UnicomTICManagementSystem.Models;
 using UnicomTICManagementSystem.Repositories;
 
@@ -8,28 +10,40 @@ namespace UnicomTICManagementSystem.Controllers
     {
         public List<Student> GetAllStudents()
         {
-            return DatabaseManager.GetAllStudents();
+            try { return DatabaseManager.GetAllStudents(); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fetching students: " + ex.Message, "Database Error");
+                return new List<Student>();
+            }
         }
 
-        // We need a way to get all courses to populate our dropdown menu.
         public List<Course> GetAllCourses()
         {
-            return DatabaseManager.GetAllCourses();
+            try { return DatabaseManager.GetAllCourses(); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fetching courses: " + ex.Message, "Database Error");
+                return new List<Course>();
+            }
         }
 
         public void AddStudent(string studentName, int courseId)
         {
-            DatabaseManager.AddStudent(studentName, courseId);
+            try { DatabaseManager.AddStudent(studentName, courseId); }
+            catch (Exception ex) { MessageBox.Show("Error adding student: " + ex.Message, "Database Error"); }
         }
 
         public void UpdateStudent(int studentId, string newName, int newCourseId)
         {
-            DatabaseManager.UpdateStudent(studentId, newName, newCourseId);
+            try { DatabaseManager.UpdateStudent(studentId, newName, newCourseId); }
+            catch (Exception ex) { MessageBox.Show("Error updating student: " + ex.Message, "Database Error"); }
         }
 
         public void DeleteStudent(int studentId)
         {
-            DatabaseManager.DeleteStudent(studentId);
+            try { DatabaseManager.DeleteStudent(studentId); }
+            catch (Exception ex) { MessageBox.Show("Error deleting student: " + ex.Message, "Database Error"); }
         }
     }
 }
